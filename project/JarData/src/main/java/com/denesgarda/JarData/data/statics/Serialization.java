@@ -1,29 +1,19 @@
 package com.denesgarda.JarData.data.statics;
 
-import java.io.ByteArrayInputStream;
+import com.denesgarda.JarData.data.Serialized;
+
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Base64;
 
 public class Serialization {
-    public static String objectToString(Object object) {
-        try {
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            ObjectOutputStream so = new ObjectOutputStream(bo);
-            so.writeObject(object);
-            so.flush();
-            return bo.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public static <object> Object stringToObject(String string) {
-        try {
-            byte b[] = string.getBytes();
-            ByteArrayInputStream bi = new ByteArrayInputStream(b);
-            ObjectInputStream si = new ObjectInputStream(bi);
-            return si.readObject();
+    public static Serialized serialize(Object object) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ObjectOutputStream out;
+            out = new ObjectOutputStream(bos);
+            out.writeObject(object);
+            out.flush();
+            return new Serialized(Base64.getEncoder().encodeToString(bos.toByteArray()));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
